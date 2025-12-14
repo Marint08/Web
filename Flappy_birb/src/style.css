@@ -1,8 +1,8 @@
 body{
-  background-color: #fafafa;
+  background-color: #16a1f1;
 }
 
-#desert{
+#sky{
   background-image: url('img/t-rex-background.png');
   background-repeat: repeat-x;
   width: 100%;
@@ -13,21 +13,29 @@ body{
   -webkit-animation: backgroundAnimation 1500s infinite linear;
 }
 
-.dino{
+.birb{
   position: absolute;
   bottom: 30px;
-  background-image: url('img/t-rex.png');
+  background-image: url('img/flappy-bird.png');
   background-repeat: no-repeat;
   width: 60px;
   height: 60px;
 }
 
-.cactus{
+.obsticle{
   position: absolute;
   bottom: 30px;
+  width: 37px;
+  height: 47px;
+  background-image: url('img/Pipe.jpg');
+}
+
+.obsticle2{
+  position: absolute;
+  bottom: 300px;
   width: 60px;
   height: 60px;
-  background-image: url('img/cacti.png');
+  background-image: url('img/Pipe2.png');
 }
 
 @keyframes backgroundAnimation{

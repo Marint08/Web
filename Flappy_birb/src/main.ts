@@ -1,6 +1,6 @@
 import './style.css'
 
-const dino:HTMLDivElement=document.querySelector('.dino') as HTMLDivElement;
+const birb:HTMLDivElement=document.querySelector('.birb') as HTMLDivElement;
 const grid:HTMLDivElement=document.querySelector('.grid') as HTMLDivElement;
 const alert:HTMLHeadingElement=document.querySelector('#alert') as HTMLHeadingElement;
 
@@ -10,7 +10,7 @@ let isJumping:boolean=false;
 let isGameOver:boolean=false;
 let score:number=0;
 
-generateCactus();
+generateObsticle();
 
 document.addEventListener('keydown', (event) => {
     if(event.code == "Space"){
@@ -32,41 +32,41 @@ function Jump():void{
                     isJumping = false;
                 }
                 position -= 5;
-                dino.style.bottom = position + 'px';
+                birb.style.bottom = position + 'px';
             }, gravity);  
         }
         position+=5;
-        dino.style.bottom = position + 'px';
+        birb.style.bottom = position + 'px';
     }, gravity);
 }
 
-function generateCactus():void{
+function generateObsticle():void{
     let randomTime: number = (Math.random()*2000)+500;
-    let cactusPosition: number = 2000;
-    let cactusDiv: HTMLDivElement = document.createElement('div');
+    let obsticlePosition: number = 2000;
+    let obsticleDiv: HTMLDivElement = document.createElement('div');
     if(isGameOver == false){
-        cactusDiv.classList.add('cactus');
-        cactusDiv.style.left = cactusPosition + 'px';
-        grid.appendChild(cactusDiv);
+        obsticleDiv.classList.add('obsticle');
+        obsticleDiv.style.left = obsticlePosition + 'px';
+        grid.appendChild(obsticleDiv);
     }
     let timer: number = setInterval(() => {
-        if(cactusPosition>0 && cactusPosition<60 && position<60){
+        if(obsticlePosition>0 && obsticlePosition<60 && position<60){
             clearInterval(timer)
             alert.innerHTML=`Game over! Score ${score}`
             isGameOver=true
             ClearGame()
         }
-        if(cactusPosition == 0){
+        if(obsticlePosition == 0){
             score++;
             alert.innerHTML = score.toString();
         }
-        cactusPosition -= 10;
-        cactusDiv.style.left = cactusPosition + 'px';
+        obsticlePosition -= 10;
+        obsticleDiv.style.left = obsticlePosition + 'px';
     }, 30);
 
     if(isGameOver == false)
     {
-        setTimeout(generateCactus, randomTime);
+        setTimeout(generateObsticle, randomTime);
     }
 
 }
