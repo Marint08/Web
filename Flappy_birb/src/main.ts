@@ -4,41 +4,75 @@ const birb:HTMLDivElement=document.querySelector('.birb') as HTMLDivElement;
 const grid:HTMLDivElement=document.querySelector('.grid') as HTMLDivElement;
 const alert:HTMLHeadingElement=document.querySelector('#alert') as HTMLHeadingElement;
 
-let position:number=30;
-let gravity:number=9.81;
-let isJumping:boolean=false;
+const position=30;
+let bottom=0;
+const gravity=-50;
+let velocity:number=0;
+const jumpVelocity:number=700;
+
+let maxJumps=Infinity;
+let maxHeight=2000;
+
+let jumpsUsed=0;
+let grounded=true;
+let lastTime=performance.now();
+
 let isGameOver:boolean=false;
 let score:number=0;
 
 generateObsticle();
 
-document.addEventListener('keydown', (event) => {
-    if(event.code == "Space"){
-        console.log("asd");
-        if(!isJumping){
-            isJumping = true;
-            Jump();
+function update(now:number){
+    const t=(now-lastTime)/1000;
+    lastTime=now;
+
+    velocity+=gravity+t;
+    bottom+=velocity*t;
+
+    if (bottom<=0)
+    {
+    if (!grounded)
+    {
+        jumpsUsed=0;
+    }
+    bottom=0
+    velocity=0
+    grounded=true;
+    }
+    else
+    {
+        grounded=false;
+    }
+    birb.style.bottom=(position+bottom)+'px';
+
+    requestAnimationFrame(update);
+}
+
+requestAnimationFrame(update);
+    
+
+
+function Jump(){
+    if(bottom>=maxHeight) return;
+
+    if (grounded){
+        velocity=jumpVelocity;
+        grounded=false;
+        return;
+    }
+    if (jumpsUsed<maxJumps){
+        velocity=jumpVelocity;
+        jumpsUsed+=1;
+    }
+}
+
+window.addEventListener('keydown', (event) => {
+    if(event.code === "Space"){
+        event.preventDefault();
+        Jump();
         }
     }
-});
-
-function Jump():void{
-    let jumpTimer: number = setInterval(() => {
-        if(position >= 200){
-            clearInterval(jumpTimer);
-            let downTimer: number = setInterval(() => {
-                if(position <= 30){
-                    clearInterval(downTimer);
-                    isJumping = false;
-                }
-                position -= 5;
-                birb.style.bottom = position + 'px';
-            }, gravity);  
-        }
-        position+=5;
-        birb.style.bottom = position + 'px';
-    }, gravity);
-}
+);
 
 function generateObsticle():void{
     let randomTime: number = (Math.random()*2000)+500;
