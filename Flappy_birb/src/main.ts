@@ -4,18 +4,29 @@ const birb:HTMLDivElement=document.querySelector('.birb') as HTMLDivElement;
 const grid:HTMLDivElement=document.querySelector('.grid') as HTMLDivElement;
 const alert:HTMLHeadingElement=document.querySelector('#alert') as HTMLHeadingElement;
 
-const position=30;
+const fromGround=30;
 let bottom=0;
 const gravity=-50;
 let velocity:number=0;
 const jumpVelocity:number=700;
 
 let maxJumps=Infinity;
-let maxHeight=2000;
+let maxHeight=750;
 
 let jumpsUsed=0;
 let grounded=true;
 let lastTime=performance.now();
+
+const obsSpacing=600;
+const obsMinHeight=50;
+const obsMaxHeight=710;
+
+const step=10;
+const interval=30;
+
+const delay=Math.round((obsSpacing*interval)/step)
+
+const spawn=2000;
 
 let isGameOver:boolean=false;
 let score:number=0;
@@ -43,7 +54,7 @@ function update(now:number){
     {
         grounded=false;
     }
-    birb.style.bottom=(position+bottom)+'px';
+    birb.style.bottom=(fromGround+bottom)+'px';
 
     requestAnimationFrame(update);
 }
@@ -75,34 +86,46 @@ window.addEventListener('keydown', (event) => {
 );
 
 function generateObsticle():void{
-    let randomTime: number = (Math.random()*2000)+500;
-    let obsticlePosition: number = 2000;
-    let obsticleDiv: HTMLDivElement = document.createElement('div');
-    if(isGameOver == false){
-        obsticleDiv.classList.add('obsticle');
-        obsticleDiv.style.left = obsticlePosition + 'px';
-        grid.appendChild(obsticleDiv);
-    }
-    let timer: number = setInterval(() => {
-        if(obsticlePosition>0 && obsticlePosition<60 && position<60){
-            clearInterval(timer)
-            alert.innerHTML=`Game over! Score ${score}`
-            isGameOver=true
-            ClearGame()
+    if (isGameOver) return;
+    const obsPosition:number=spawn;
+    const obsHeight:number=Math.round(Math.random()*(obsMaxHeight-obsMinHeight)+obsMinHeight)
+    let pos=obsPosition;
+    const obsDiv:HTMLDivElement=document.createElement('div');
+    obsDiv.classList.add('obsticle');
+
+    obsDiv.style.height=obsHeight+'px';
+    obsDiv.style.left=pos+'px'
+    obsDiv.style.bottom='0px'
+
+    grid.appendChild(obsDiv);
+
+    const timer:number=window.setInterval(()=>{
+        const collisionStart=0;
+        const collisionEnd=60;
+
+        if (pos>collisionStart && pos<collisionEnd){
+            const birbBottom=fromGround+bottom;
+            if (birbBottom<=obsHeight){
+                window.clearInterval(timer);
+                alert.innerHTML=`Game over! Score ${score}`;
+                isGameOver=true;
+                ClearGame()
+                return;
+            }
         }
-        if(obsticlePosition == 0){
+        if (pos <=0){
             score++;
-            alert.innerHTML = score.toString();
+            alert.innerHTML=score.toString();
+            if (obsDiv.parentElement) obsDiv.parentElement.removeChild(obsDiv);
+            window.clearInterval(timer);
+            return;
         }
-        obsticlePosition -= 10;
-        obsticleDiv.style.left = obsticlePosition + 'px';
-    }, 30);
-
-    if(isGameOver == false)
-    {
-        setTimeout(generateObsticle, randomTime);
+        pos-=step
+        obsDiv.style.left=pos+'px'
+    },interval)
+    if (!isGameOver){
+        window.setTimeout(generateObsticle, delay)
     }
-
 }
 
 function ClearGame():void{

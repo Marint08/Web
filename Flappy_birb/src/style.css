@@ -3,12 +3,12 @@ body{
 }
 
 #sky{
-  background-image: url('img/t-rex-background.png');
+  background-image: url('img/background.png');
   background-repeat: repeat-x;
   width: 100%;
   position: absolute;
   bottom: 0px;
-  height: 250px;
+  height: 950px;
   animation: backgroundAnimation 1500s infinite linear;
   -webkit-animation: backgroundAnimation 1500s infinite linear;
 }
@@ -25,8 +25,8 @@ body{
 .obsticle{
   position: absolute;
   bottom: 30px;
-  width: 37px;
-  height: 47px;
+  width: 50px;
+  height: 83px;
   background-image: url('img/Pipe.jpg');
 }
 
